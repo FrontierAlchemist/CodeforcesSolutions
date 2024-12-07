@@ -1,3 +1,5 @@
+// https://codeforces.com/edu/course/2/lesson/8/1/practice/contest/290939/problem/D
+
 using System;
 
 namespace Sandbox

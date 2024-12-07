@@ -1,3 +1,5 @@
+// https://codeforces.com/contest/2050/problem/E
+
 #define _CRT_SECURE_NO_WARNINGS
 
 #include <algorithm>
