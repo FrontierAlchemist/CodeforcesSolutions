@@ -1,5 +1,7 @@
 // https://codeforces.com/edu/course/2/lesson/8/2/practice/contest/290940/problem/B
 
+using System;
+
 public class Program
 {
 	static void SolveTestCase()
@@ -7,9 +9,9 @@ public class Program
 		string[] valuesFromConsole = Console.ReadLine().Split();
 		int verticesCount = int.Parse(valuesFromConsole[0]);
 		int regularDegree = int.Parse(valuesFromConsole[1]);
-		
+
 		int doubleEdgesCount = verticesCount * regularDegree;
-		if (doubleEdgesCount % 2 != 0 || verticesCount < regularDegree) {
+		if (doubleEdgesCount % 2 != 0 || verticesCount <= regularDegree) {
 			Console.WriteLine("NO");
 			return;
 		}
@@ -18,19 +20,22 @@ public class Program
 		Console.WriteLine("YES");
 		Console.WriteLine(edgesCount);
 
-		int cycle = edgesCount / verticesCount;
-		for (int i = 1; i <= cycle; ++i) {
-			for (int j = 1; j <= verticesCount; ++j) {
-				int to = j + i;
+		int neighborsCount = regularDegree / 2;
+		for (int i = 1; i <= verticesCount; ++i) {
+			for (int j = 1; j <= neighborsCount; ++j) {
+				int to = i + j;
 				if (to > verticesCount) {
 					to %= verticesCount;
 				}
-				Console.WriteLine($"{j} {to}");
+				Console.WriteLine($"{i} {to}");
 			}
 		}
-		int remainder = edgesCount % verticesCount;
-		for (int i = 1; i <= remainder; ++i) {
-			Console.WriteLine($"{i} {i + remainder}");
+
+		if (regularDegree % 2 == 1) {
+			int halfOfVerticesCount = verticesCount / 2;
+			for (int i = 1; i <= halfOfVerticesCount; ++i) {
+				Console.WriteLine($"{i} {i + halfOfVerticesCount}");
+			}
 		}
 	}
 
