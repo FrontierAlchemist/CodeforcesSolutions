@@ -18,11 +18,7 @@ public class Program
 		int[] verticesDegrees = new int[verticesCount];
 		for (int i = 0; i < verticesCount; ++i) {
 			for (int j = 0; j < verticesCount; ++j) {
-				if (i == j && adjacencyMatrix[i, j] != 0) {
-					Console.WriteLine("NO");
-					return;
-				}
-				if (adjacencyMatrix[i, j] > 1) {
+				if (i == j && adjacencyMatrix[i, j] == 1) {
 					Console.WriteLine("NO");
 					return;
 				}
