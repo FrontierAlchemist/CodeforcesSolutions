@@ -68,6 +68,8 @@ namespace CodeForcesCSharpTemplate
 
 	public class Program
 	{
+		const bool IsSeveralTests = true;
+
 		static readonly ReaderWriter readerWriter = IsDebug() ? new FileReaderWrite() : new ConsoleReaderWriter();
 
 		static bool IsDebug()
@@ -85,16 +87,18 @@ namespace CodeForcesCSharpTemplate
 
 		static void RunTests()
 		{
-			int testsCount = int.Parse(readerWriter.ReadLine());
+			int testsCount = IsSeveralTests ? int.Parse(readerWriter.ReadLine()) : 1;
 			for (int i = 0; i < testsCount; i++) {
 				SolveTestCase();
 			}
 		}
 
+		static void OnProgramClose() => readerWriter.Close();
+
 		static void Main()
 		{
 			RunTests();
-			readerWriter.Close();
+			OnProgramClose();
 		}
 	}
 }
