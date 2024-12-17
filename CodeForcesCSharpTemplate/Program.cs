@@ -24,7 +24,8 @@ namespace CodeForcesCSharpTemplate
 
 	public class ConsoleReaderWriter : ReaderWriter
 	{
-		public override string ReadLine() => Console.ReadLine();
+		public override string ReadLine()
+			=> Console.ReadLine() ?? throw new FormatException("Error on trying read line from console.");
 
 		public override void Write(string value) => Console.Write(value);
 
@@ -34,8 +35,13 @@ namespace CodeForcesCSharpTemplate
 
 	public class FileReaderWrite : ReaderWriter
 	{
-		private const string FileInPath = "..\\..\\..\\input.txt";
-		private const string FileOutPath = "..\\..\\..\\output.txt";
+
+		private const string RelativePathToFiles = "..\\..\\..\\";
+		private const string FileInName = "input.txt";
+		private const string FileOutName = "output.txt";
+
+		private static string FileInPath => Path.Combine(RelativePathToFiles, FileInName);
+		private static string FileOutPath => Path.Combine(RelativePathToFiles, FileOutName);
 
 		private readonly StreamReader fileIn;
 		private readonly StreamWriter fileOut;
@@ -46,7 +52,8 @@ namespace CodeForcesCSharpTemplate
 			fileOut = new StreamWriter(FileOutPath);
 		}
 
-		public override string ReadLine() => fileIn.ReadLine();
+		public override string ReadLine()
+			=> fileIn.ReadLine() ?? throw new FormatException($"Error on trying read line from file: {FileInPath}.");
 
 		public override void Write(string value) => fileOut.Write(value);
 
