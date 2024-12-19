@@ -1,74 +1,102 @@
 ﻿using System;
 using System.IO;
 
-public interface IReaderFromInput
+public interface IInputReader
 {
 	string ReadLine();
 }
 
-public interface IWriterFromOutput
+public interface IOutputWriter
 {
 	void Write(string value);
 	void WriteLine(string value);
 }
 
-public abstract class ReaderWriter : IReaderFromInput, IWriterFromOutput
+public class ConsoleReader : IInputReader
 {
-	public abstract string ReadLine();
-	public abstract void Write(string value);
-	public abstract void WriteLine(string value);
-	public abstract void Close();
-}
-
-public class ConsoleReaderWriter : ReaderWriter
-{
-	public override string ReadLine()
+	public string ReadLine()
 		=> Console.ReadLine() ?? throw new FormatException("Error on trying read line from console.");
-
-	public override void Write(string value) => Console.Write(value);
-
-	public override void WriteLine(string value) => Console.WriteLine(value);
-	public override void Close() { }
 }
 
-public class FileReaderWrite : ReaderWriter
+public class ConsoleWriter : IOutputWriter
 {
+	public void Write(string value) => Console.Write(value);
 
+	public void WriteLine(string value) => Console.WriteLine(value);
+}
+
+public abstract class FileHolder
+{
 	private const string RelativePathToFiles = "..\\..\\..\\";
-	private const string FileInName = "input.txt";
-	private const string FileOutName = "output.txt";
 
-	private static string FileInPath => Path.Combine(RelativePathToFiles, FileInName);
-	private static string FileOutPath => Path.Combine(RelativePathToFiles, FileOutName);
+	protected readonly string fileName;
 
-	private readonly StreamReader fileIn;
-	private readonly StreamWriter fileOut;
+	protected virtual string PathToFile => Path.Combine(RelativePathToFiles, fileName);
 
-	public FileReaderWrite()
+	public FileHolder(string fileName)
 	{
-		fileIn = new StreamReader(FileInPath);
-		fileOut = new StreamWriter(FileOutPath);
+		this.fileName = fileName;
 	}
 
-	public override string ReadLine()
-		=> fileIn.ReadLine() ?? throw new FormatException($"Error on trying read line from file: {FileInPath}.");
+	public abstract void CloseFile();
+}
 
-	public override void Write(string value) => fileOut.Write(value);
+public class FileReader : FileHolder, IInputReader
+{
+	private readonly StreamReader file;
 
-	public override void WriteLine(string value) => fileOut.WriteLine(value);
-
-	public override void Close()
+	public FileReader() : base("input.txt")
 	{
-		fileIn.Close();
-		fileOut.Close();
+		file = new StreamReader(PathToFile);
 	}
+
+	public string ReadLine()
+		=> file.ReadLine() ?? throw new FormatException($"Error on trying read line from file: {PathToFile}.");
+
+	public override void CloseFile() => file.Close();
+}
+
+public class FileWriter : FileHolder, IOutputWriter
+{
+	private readonly StreamWriter file;
+
+	public FileWriter() : base("output.txt")
+	{
+		file = new StreamWriter(PathToFile);
+	}
+
+	public void Write(string value) => file.Write(value);
+
+	public void WriteLine(string value) => file.WriteLine(value);
+
+	public override void CloseFile() => file.Close();
 }
 
 public class Program
 {
 	const bool IsSeveralTests = true;
 
-	static readonly ReaderWriter readerWriter = IsDebug() ? new FileReaderWrite() : new ConsoleReaderWriter();
+	static readonly IInputReader reader;
+	static readonly IOutputWriter writer;
+
+	static readonly Action? onProgramClosing;
+
+	static Program()
+	{
+		if (IsDebug()) {
+			var fileReader = new FileReader();
+			var fileWriter = new FileWriter();
+
+			onProgramClosing += fileReader.CloseFile;
+			onProgramClosing += fileWriter.CloseFile;
+
+			reader = fileReader;
+			writer = fileWriter;
+		} else {
+			reader = new ConsoleReader();
+			writer = new ConsoleWriter();
+		}
+	}
 
 	static bool IsDebug()
 	{
@@ -85,17 +113,20 @@ public class Program
 
 	static void RunTests()
 	{
-		int testsCount = IsSeveralTests ? int.Parse(readerWriter.ReadLine()) : 1;
+		int testsCount = IsSeveralTests ? int.Parse(reader.ReadLine()) : 1;
 		for (int i = 0; i < testsCount; i++) {
 			SolveTestCase();
 		}
 	}
 
-	static void OnProgramClose() => readerWriter.Close();
+	static void Close()
+	{
+		onProgramClosing?.Invoke();
+	}
 
 	static void Main()
 	{
 		RunTests();
-		OnProgramClose();
+		Close();
 	}
 }
