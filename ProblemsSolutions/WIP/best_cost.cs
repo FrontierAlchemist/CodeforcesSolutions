@@ -1,0 +1,172 @@
+// https://codeforces.com/contest/2051/problem/E
+
+using System;
+using System.Collections.Generic;
+using System.IO;
+
+public interface IInputReader
+{
+	string ReadLine();
+}
+
+public interface IOutputWriter
+{
+	void Write(string value);
+	void WriteLine(string value);
+}
+
+public class ConsoleReader : IInputReader
+{
+	public string ReadLine()
+		=> Console.ReadLine() ?? throw new FormatException("Error on trying read line from console.");
+}
+
+public class ConsoleWriter : IOutputWriter
+{
+	public void Write(string value) => Console.Write(value);
+
+	public void WriteLine(string value) => Console.WriteLine(value);
+}
+
+public abstract class FileHolder
+{
+	private const string RelativePathToFiles = "..\\..\\..\\";
+
+	protected readonly string fileName;
+
+	protected virtual string PathToFile => Path.Combine(RelativePathToFiles, fileName);
+
+	public FileHolder(string fileName)
+	{
+		this.fileName = fileName;
+	}
+
+	public abstract void CloseFile();
+}
+
+public class FileReader : FileHolder, IInputReader
+{
+	private readonly StreamReader file;
+
+	public FileReader() : base("input.txt")
+	{
+		file = new StreamReader(PathToFile);
+	}
+
+	public string ReadLine()
+		=> file.ReadLine() ?? throw new FormatException($"Error on trying read line from file: {PathToFile}.");
+
+	public override void CloseFile() => file.Close();
+}
+
+public class FileWriter : FileHolder, IOutputWriter
+{
+	private readonly StreamWriter file;
+
+	public FileWriter() : base("output.txt")
+	{
+		file = new StreamWriter(PathToFile);
+	}
+
+	public void Write(string value) => file.Write(value);
+
+	public void WriteLine(string value) => file.WriteLine(value);
+
+	public override void CloseFile() => file.Close();
+}
+
+public class Program
+{
+	const bool IsSeveralTests = true;
+
+	static readonly IInputReader reader;
+	static readonly IOutputWriter writer;
+
+	static readonly Action? onProgramClosing;
+
+	static Program()
+	{
+		if (IsDebug()) {
+			var fileReader = new FileReader();
+			var fileWriter = new FileWriter();
+
+			onProgramClosing += fileReader.CloseFile;
+			onProgramClosing += fileWriter.CloseFile;
+
+			reader = fileReader;
+			writer = fileWriter;
+		} else {
+			reader = new ConsoleReader();
+			writer = new ConsoleWriter();
+		}
+	}
+
+	static bool IsDebug()
+	{
+#if DEBUG
+		return true;
+#else
+		return false;
+#endif
+	}
+
+	private struct PurchaseEvent(ulong sum, bool hasBadReview) : IComparable<PurchaseEvent>
+	{
+		public ulong Sum { get; private set; } = sum;
+		public bool HasBadReview { get; private set; } = hasBadReview;
+
+		public int CompareTo(PurchaseEvent other) => Sum.CompareTo(other.Sum);
+	}
+
+	static void SolveTestCase()
+	{
+		var valuesFromInput = reader.ReadLine().Split(' ');
+		int customersCount = int.Parse(valuesFromInput[0]);
+		int badReviewsLimit = int.Parse(valuesFromInput[1]);
+		List<PurchaseEvent> purchaseEvents = new(customersCount * 2);
+		valuesFromInput = reader.ReadLine().Split(' ');
+		for (int i = 0; i < customersCount; ++i) {
+			purchaseEvents.Add(new PurchaseEvent(ulong.Parse(valuesFromInput[i]), true));
+		}
+		valuesFromInput = reader.ReadLine().Split(' ');
+		for (int i = 0; i < customersCount; ++i) {
+			purchaseEvents.Add(new PurchaseEvent(ulong.Parse(valuesFromInput[i]), false));
+		}
+		purchaseEvents.Sort();
+		int badReviewsCount = 0;
+		uint purchasesCount = 0;
+		ulong maxRevenue = 0ul;
+		for (int i = purchaseEvents.Count - 1; i >= 0; --i) {
+			if (purchaseEvents[i].HasBadReview && badReviewsCount + 1 > badReviewsLimit) {
+				continue;
+			}
+			if (!purchaseEvents[i].HasBadReview) {
+				--badReviewsCount;
+			} else {
+				++badReviewsCount;
+				++purchasesCount;
+			}
+			maxRevenue = Math.Max(maxRevenue, (ulong)purchaseEvents[i].Sum * purchasesCount);
+		}
+		writer.WriteLine(maxRevenue.ToString());
+	}
+
+	static void RunTests()
+	{
+		int testsCount = IsSeveralTests ? int.Parse(reader.ReadLine()) : 1;
+		for (int i = 0; i < testsCount; i++) {
+			SolveTestCase();
+		}
+	}
+
+	static void Close()
+	{
+		onProgramClosing?.Invoke();
+	}
+
+	static void Main()
+	{
+		RunTests();
+		Close();
+	}
+}
