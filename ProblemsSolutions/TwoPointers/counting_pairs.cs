@@ -112,43 +112,43 @@ public class Program
 	static void SolveTestCase()
 	{
 		string[] valuesFromInput = reader.ReadLine().Split();
-		uint numbersCount = uint.Parse(valuesFromInput[0]);
-		ulong leftBorder = ulong.Parse(valuesFromInput[1]);
-		ulong rightBorder = ulong.Parse(valuesFromInput[2]);
+		int numbersCount = int.Parse(valuesFromInput[0]);
+		long leftBorder = long.Parse(valuesFromInput[1]);
+		long rightBorder = long.Parse(valuesFromInput[2]);
 
 		valuesFromInput = reader.ReadLine().Split();
-		ulong[] numbers = new ulong[numbersCount];
-		ulong totalSum = 0;
-		for (uint i = 0; i < numbersCount; ++i) {
-			numbers[i] = ulong.Parse(valuesFromInput[i]);
+		long[] numbers = new long[numbersCount];
+		long totalSum = 0;
+		for (int i = 0; i < numbersCount; ++i) {
+			numbers[i] = long.Parse(valuesFromInput[i]);
 			totalSum += numbers[i];
 		}
 
 		Array.Sort(numbers);
 
-		ulong interestingPairsCount = 0;
-		
-		for (uint i = 0; i < numbersCount - 1; ++i) {
-			ulong currentSum = totalSum - numbers[i];
-			uint leftPointer = i + 1;
-			uint rightPointer = numbersCount - 1;
-			while (leftPointer <= rightPointer && (currentSum - numbers[leftPointer]) > rightBorder) {
-				++leftPointer;
-			}
-			if (leftPointer > rightPointer) {
-				continue;
+		long answer = GetItemsLessThan(rightBorder + 1) - GetItemsLessThan(leftBorder);
+		writer.WriteLine(answer.ToString());
+
+		long GetItemsLessThan(long border)
+		{
+			long answer = 0;
+			int pointer = 0;
+			for (int i = numbersCount - 1; i >= 0; --i) {
+				long localSum = totalSum - numbers[i];
+				while (pointer < numbersCount && (localSum - numbers[pointer]) >= border) {
+					++pointer;
+				}
+				answer += numbersCount - pointer;
 			}
 
-			while (leftPointer <= rightPointer && (currentSum - numbers[rightPointer] < leftBorder)) {
-				--rightPointer;
-			}
-			if (leftPointer > rightPointer) {
-				continue;
+			for (int i = 0; i < numbersCount; ++i) {
+				if (totalSum - numbers[i] - numbers[i] < border) {
+					--answer;
+				}
 			}
 
-			interestingPairsCount += (ulong)rightPointer - leftPointer + 1;
+			return answer / 2;
 		}
-		writer.WriteLine(interestingPairsCount.ToString());
 	}
 
 	static void RunTests()
