@@ -110,45 +110,52 @@ public class Program
 #endif
 	}
 
-	private struct PurchaseEvent(ulong sum, bool hasBadReview) : IComparable<PurchaseEvent>
+	class Point
 	{
-		public ulong Sum { get; private set; } = sum;
-		public bool HasBadReview { get; private set; } = hasBadReview;
-
-		public int CompareTo(PurchaseEvent other) => Sum.CompareTo(other.Sum);
+		public uint BadReviews;
+		public uint LeavedUsers;
 	}
 
 	static void SolveTestCase()
 	{
-		var valuesFromInput = reader.ReadLine().Split(' ');
-		int customersCount = int.Parse(valuesFromInput[0]);
-		int badReviewsLimit = int.Parse(valuesFromInput[1]);
-		List<PurchaseEvent> purchaseEvents = new(customersCount * 2);
+		string[] valuesFromInput = reader.ReadLine().Split(' ');
+		uint customersCount = uint.Parse(valuesFromInput[0]);
+		uint badReviewsLimit = uint.Parse(valuesFromInput[1]);
+
+		SortedDictionary<uint, Point> events = new();
 		valuesFromInput = reader.ReadLine().Split(' ');
-		for (int i = 0; i < customersCount; ++i) {
-			purchaseEvents.Add(new PurchaseEvent(ulong.Parse(valuesFromInput[i]), true));
-		}
-		valuesFromInput = reader.ReadLine().Split(' ');
-		for (int i = 0; i < customersCount; ++i) {
-			purchaseEvents.Add(new PurchaseEvent(ulong.Parse(valuesFromInput[i]), false));
-		}
-		purchaseEvents.Sort();
-		int badReviewsCount = 0;
-		uint purchasesCount = 0;
-		ulong maxRevenue = 0ul;
-		for (int i = purchaseEvents.Count - 1; i >= 0; --i) {
-			if (purchaseEvents[i].HasBadReview && badReviewsCount + 1 > badReviewsLimit) {
-				continue;
-			}
-			if (!purchaseEvents[i].HasBadReview) {
-				--badReviewsCount;
+		foreach (string value in valuesFromInput) {
+			uint cost = uint.Parse(value);
+			if (events.TryGetValue(cost, out var point)) {
+				++point.BadReviews;
 			} else {
-				++badReviewsCount;
-				++purchasesCount;
+				events[cost] = new Point() { BadReviews = 1 };
 			}
-			maxRevenue = Math.Max(maxRevenue, (ulong)purchaseEvents[i].Sum * purchasesCount);
 		}
-		writer.WriteLine(maxRevenue.ToString());
+		valuesFromInput = reader.ReadLine().Split(' ');
+		foreach (string value in valuesFromInput) {
+			uint cost = uint.Parse(value);
+			if (events.TryGetValue(cost, out var point)) {
+				++point.LeavedUsers;
+			} else {
+				events[cost] = new Point() { LeavedUsers = 1 };
+			}
+		}
+
+		ulong maxProfit = 0;
+		uint purchasesCount = customersCount;
+		uint badReviewsCount = 0;
+		foreach (var @event in events) {
+			ulong cost = @event.Key;
+			if (badReviewsCount <= badReviewsLimit) {
+				maxProfit = Math.Max(maxProfit, cost * purchasesCount);
+			}
+			badReviewsCount += @event.Value.BadReviews;
+			badReviewsCount -= @event.Value.LeavedUsers;
+			purchasesCount -= @event.Value.LeavedUsers;
+		}
+
+		writer.WriteLine(maxProfit.ToString());
 	}
 
 	static void RunTests()
