@@ -9,7 +9,9 @@ public interface IInputReader
 public interface IOutputWriter
 {
 	void Write(string value);
+	public void Write(object obj);
 	void WriteLine(string value);
+	public void WriteLine(object obj);
 }
 
 public class ConsoleReader : IInputReader
@@ -22,7 +24,10 @@ public class ConsoleWriter : IOutputWriter
 {
 	public void Write(string value) => Console.Write(value);
 
+	public void Write(object obj) => Console.Write(obj);
+
 	public void WriteLine(string value) => Console.WriteLine(value);
+	public void WriteLine(object obj) => Console.WriteLine(obj);
 }
 
 public abstract class FileHolder
@@ -67,7 +72,11 @@ public class FileWriter : FileHolder, IOutputWriter
 
 	public void Write(string value) => file.Write(value);
 
+	public void Write(object obj) => file.Write(obj);
+
 	public void WriteLine(string value) => file.WriteLine(value);
+
+	public void WriteLine(object obj) => file.Write(obj);
 
 	public override void CloseFile() => file.Close();
 }
