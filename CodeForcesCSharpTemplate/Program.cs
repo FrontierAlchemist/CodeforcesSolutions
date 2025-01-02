@@ -76,7 +76,7 @@ public class FileWriter : FileHolder, IOutputWriter
 
 	public void WriteLine(string value) => file.WriteLine(value);
 
-	public void WriteLine(object obj) => file.Write(obj);
+	public void WriteLine(object obj) => file.WriteLine(obj);
 
 	public override void CloseFile() => file.Close();
 }
