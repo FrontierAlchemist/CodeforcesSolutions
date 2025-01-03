@@ -1,6 +1,35 @@
 ﻿using System;
 using System.IO;
 
+/// <summary>
+/// Solve [PROBLEM_LINK] problem.
+/// </summary>
+public class ProblemSolver
+{
+	const bool IsSeveralTests = true;
+
+	private readonly IInputReader input;
+	private readonly IOutputWriter output;
+
+	public ProblemSolver(IInputReader input, IOutputWriter output)
+	{
+		this.input = input;
+		this.output = output;
+	}
+
+	public void Solve()
+	{
+		int testsCount = IsSeveralTests ? int.Parse(input.ReadLine()) : 1;
+		for (int i = 0; i < testsCount; i++) {
+			SolveTestCase();
+		}
+	}
+
+	private void SolveTestCase()
+	{
+	}
+}
+
 public interface IInputReader
 {
 	string ReadLine();
@@ -81,33 +110,11 @@ public class FileWriter : FileHolder, IOutputWriter
 	public override void CloseFile() => file.Close();
 }
 
-public class Program
+internal class Program
 {
-	const bool IsSeveralTests = true;
+	private static Action? onProgramClosing;
 
-	static readonly IInputReader reader;
-	static readonly IOutputWriter writer;
-
-	static readonly Action? onProgramClosing;
-
-	static Program()
-	{
-		if (IsDebug()) {
-			var fileReader = new FileReader();
-			var fileWriter = new FileWriter();
-
-			onProgramClosing += fileReader.CloseFile;
-			onProgramClosing += fileWriter.CloseFile;
-
-			reader = fileReader;
-			writer = fileWriter;
-		} else {
-			reader = new ConsoleReader();
-			writer = new ConsoleWriter();
-		}
-	}
-
-	static bool IsDebug()
+	private static bool IsDebug()
 	{
 #if DEBUG
 		return true;
@@ -116,26 +123,36 @@ public class Program
 #endif
 	}
 
-	static void SolveTestCase()
-	{
-	}
-
-	static void RunTests()
-	{
-		int testsCount = IsSeveralTests ? int.Parse(reader.ReadLine()) : 1;
-		for (int i = 0; i < testsCount; i++) {
-			SolveTestCase();
-		}
-	}
-
-	static void Close()
+	private static void Close()
 	{
 		onProgramClosing?.Invoke();
 	}
 
-	static void Main()
+	private static ProblemSolver CreateProblemSolver()
 	{
-		RunTests();
+		IInputReader input;
+		IOutputWriter output;
+
+		if (IsDebug()) {
+			var fileReader = new FileReader();
+			var fileWriter = new FileWriter();
+
+			onProgramClosing += fileReader.CloseFile;
+			onProgramClosing += fileWriter.CloseFile;
+
+			input = fileReader;
+			output = fileWriter;
+		} else {
+			input = new ConsoleReader();
+			output = new ConsoleWriter();
+		}
+
+		return new ProblemSolver(input, output);
+	}
+
+	private static void Main()
+	{
+		CreateProblemSolver().Solve();
 		Close();
 	}
 }
