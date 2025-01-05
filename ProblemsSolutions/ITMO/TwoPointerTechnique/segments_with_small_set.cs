@@ -62,19 +62,18 @@ public class ProblemSolver
 		void AddElementToSegment(int element)
 		{
 			if (!occurrencesMapping.TryGetValue(element, out int value)) {
-				occurrencesMapping[element] = 1;
+				occurrencesMapping[element] = 0;
+			}
+			if (++occurrencesMapping[element] == 1) {
 				++currentUniqueElementsCount;
-			} else {
-				occurrencesMapping[element] = ++value;
 			}
 		}
 
 		void RemoveElementFromSegment(int element)
 		{
-			if (occurrencesMapping[element] == 1) {
+			if (--occurrencesMapping[element] == 0) {
 				--currentUniqueElementsCount;
 			}
-			--occurrencesMapping[element];
 		}
 	}
 }
