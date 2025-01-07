@@ -33,6 +33,7 @@ public class ProblemSolver
 public interface IInputReader
 {
 	string ReadLine();
+	string[] ReadLineAndSplit();
 }
 
 public interface IOutputWriter
@@ -47,6 +48,8 @@ public class ConsoleReader : IInputReader
 {
 	public string ReadLine()
 		=> Console.ReadLine() ?? throw new FormatException("Error on trying read line from console.");
+
+	public string[] ReadLineAndSplit() => ReadLine().Split();
 }
 
 public class ConsoleWriter : IOutputWriter
@@ -86,6 +89,8 @@ public class FileReader : FileHolder, IInputReader
 
 	public string ReadLine()
 		=> file.ReadLine() ?? throw new FormatException($"Error on trying read line from file: {PathToFile}.");
+
+	public string[] ReadLineAndSplit() => ReadLine().Split();
 
 	public override void CloseFile() => file.Close();
 }
