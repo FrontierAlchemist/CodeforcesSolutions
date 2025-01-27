@@ -4,6 +4,8 @@
 
 using namespace std;
 
+const bool IS_SEVERAL_TESTS = true;
+
 void RedirectIOStreams() {
 	auto fin = freopen("input.txt", "r", stdin);
 	auto fout = freopen("output.txt", "w", stdout);
@@ -16,12 +18,13 @@ void SpeedUpIO() {
 }
 
 void SolveProblem() {
-	
 }
 
 void RunTests() {
-	int testsCount;
-	cin >> testsCount;
+	int testsCount = 1;
+	if (IS_SEVERAL_TESTS) {
+		cin >> testsCount;
+	}
 	for (int t = 0; t < testsCount; ++t) {
 		SolveProblem();
 	}
