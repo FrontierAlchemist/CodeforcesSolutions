@@ -22,11 +22,8 @@ internal class Program
 #endif
 	}
 
-	private static readonly StreamReader input =
-		IsDebug() ? new StreamReader(InputFilePath) : new StreamReader(Console.OpenStandardInput());
-
-	private static readonly StreamWriter output =
-		IsDebug() ? new StreamWriter(OutputFilePath) : new StreamWriter(Console.OpenStandardOutput());
+	private static StreamReader input;
+	private static StreamWriter output;
 
 	private static void SolveProblem()
 	{
@@ -40,7 +37,13 @@ internal class Program
 		}
 	}
 
-	private static void CloseStreams()
+	private static void OpenIoStreams()
+	{
+		input = IsDebug() ? new StreamReader(InputFilePath) : new StreamReader(Console.OpenStandardInput());
+		output = IsDebug() ? new StreamWriter(OutputFilePath) : new StreamWriter(Console.OpenStandardOutput());
+	}
+
+	private static void CloseIoStreams()
 	{
 		input.Close();
 		output.Close();
@@ -48,7 +51,8 @@ internal class Program
 
 	private static void Main()
 	{
+		OpenIoStreams();
 		RunTests();
-		CloseStreams();
+		CloseIoStreams();
 	}
 }
