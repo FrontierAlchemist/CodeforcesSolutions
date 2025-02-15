@@ -28,6 +28,7 @@ internal class Program
 
 	private static void SolveProblem()
 	{
+		long numbersCount = input.get
 	}
 
 	private static void RunTests()
@@ -90,6 +91,17 @@ internal class StreamReaderWrapper
 		double[] array = new double[size];
 		for (int i = 0; i < size; ++i) {
 			array[i] = GetDouble();
+		}
+		return array;
+	}
+
+	public long GetLong() => long.Parse(GetInputLine());
+
+	public long[] GetLongArray(int size)
+	{
+		long[] array = new long[size];
+		for (int i = 0; i < size; ++i) {
+			array[i] = GetInt();
 		}
 		return array;
 	}
