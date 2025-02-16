@@ -28,7 +28,6 @@ internal class Program
 
 	private static void SolveProblem()
 	{
-		long numbersCount = input.get
 	}
 
 	private static void RunTests()
