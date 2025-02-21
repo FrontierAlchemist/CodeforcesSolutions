@@ -22,7 +22,7 @@ internal class Program
 	}
 
 	private static StreamReaderWrapper input;
-	private static StreamWriter output;
+	private static StreamWriterWrapper output;
 
 	private static void SolveProblem()
 	{
@@ -40,7 +40,8 @@ internal class Program
 	{
 		var inputStream = IsDebug() ? new StreamReader(InputFilePath) : new StreamReader(Console.OpenStandardInput());
 		input = new StreamReaderWrapper(inputStream);
-		output = IsDebug() ? new StreamWriter(OutputFilePath) : new StreamWriter(Console.OpenStandardOutput());
+		var outputStream = IsDebug() ? new StreamWriter(OutputFilePath) : new StreamWriter(Console.OpenStandardOutput());
+		output = new StreamWriterWrapper(outputStream);
 	}
 
 	private static void CloseIo()
@@ -122,5 +123,24 @@ internal class StreamReaderWrapper
 				yield return line;
 			}
 		}
+	}
+}
+
+internal class StreamWriterWrapper
+{
+	private readonly StreamWriter streamWriter;
+
+	public StreamWriterWrapper(StreamWriter streamWriter)
+	{
+		this.streamWriter = streamWriter;
+	}
+
+	public void Write(object obj) => streamWriter.Write(obj);
+
+	public void WriteLine(object obj) => streamWriter.WriteLine(obj);
+
+	public void Close()
+	{
+		streamWriter.Close();
 	}
 }
