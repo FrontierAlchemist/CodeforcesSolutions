@@ -2,9 +2,20 @@
 using System.Collections.Generic;
 using System.IO;
 
-/// <summary>
-/// Solve [PROBLEM_LINK] problem.
-/// </summary>
+internal class Solver
+{
+	private static StreamReaderWrapper Input => Program.Input;
+	private static StreamWriterWrapper Output => Program.Output;
+
+	/// <summary>
+	/// Solve [PROBLEM_LINK] problem.
+	/// </summary>
+	public static void SolveProblem()
+	{
+
+	}
+}
+
 internal class Program
 {
 	private const bool IsSeveralTests = true;
@@ -21,33 +32,29 @@ internal class Program
 #endif
 	}
 
-	private static StreamReaderWrapper input;
-	private static StreamWriterWrapper output;
-
-	private static void SolveProblem()
-	{
-	}
+	public static StreamReaderWrapper Input { get; private set; }
+	public static StreamWriterWrapper Output { get; private set; }
 
 	private static void RunTests()
 	{
-		int testsCount = IsSeveralTests ? int.Parse(input.GetString()) : 1;
+		int testsCount = IsSeveralTests ? int.Parse(Input.GetString()) : 1;
 		for (int i = 0; i < testsCount; ++i) {
-			SolveProblem();
+			Solver.SolveProblem();
 		}
 	}
 
 	private static void OpenIo()
 	{
 		var inputStream = IsDebug() ? new StreamReader(InputFilePath) : new StreamReader(Console.OpenStandardInput());
-		input = new StreamReaderWrapper(inputStream);
+		Input = new StreamReaderWrapper(inputStream);
 		var outputStream = IsDebug() ? new StreamWriter(OutputFilePath) : new StreamWriter(Console.OpenStandardOutput());
-		output = new StreamWriterWrapper(outputStream);
+		Output = new StreamWriterWrapper(outputStream);
 	}
 
 	private static void CloseIo()
 	{
-		input.Close();
-		output.Close();
+		Input.Close();
+		Output.Close();
 	}
 
 	private static void Main()
