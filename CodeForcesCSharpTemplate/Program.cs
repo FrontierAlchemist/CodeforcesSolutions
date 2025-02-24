@@ -106,7 +106,7 @@ internal class StreamReaderWrapper
 	{
 		long[] array = new long[size];
 		for (int i = 0; i < size; ++i) {
-			array[i] = GetInt();
+			array[i] = GetLong();
 		}
 		return array;
 	}
