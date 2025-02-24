@@ -52,7 +52,7 @@ internal class Program
 
 	private static void RunTests()
 	{
-		int testsCount = IsSeveralTests ? int.Parse(Input.GetString()) : 1;
+		int testsCount = IsSeveralTests ? int.Parse(Input.ReadString()) : 1;
 		for (int i = 0; i < testsCount; ++i) {
 			Solver.SolveProblem();
 		}
@@ -76,37 +76,37 @@ internal class StreamReaderWrapper
 		inputLinesEnumerator = GetInputLinesEnumerator();
 	}
 
-	public string GetString() => GetInputLine();
+	public string ReadString() => ReadLine();
 
-	public int GetInt() => int.Parse(GetInputLine());
+	public int ReadInt() => int.Parse(ReadLine());
 
-	public int[] GetIntArray(int size)
+	public int[] ReadIntArray(int size)
 	{
 		int[] array = new int[size];
 		for (int i = 0; i < size; ++i) {
-			array[i] = GetInt();
+			array[i] = ReadInt();
 		}
 		return array;
 	}
 
-	public double GetDouble() => double.Parse(GetInputLine());
+	public double ReadDouble() => double.Parse(ReadLine());
 
-	public double[] GetDoubleArray(int size)
+	public double[] ReadDoubleArray(int size)
 	{
 		double[] array = new double[size];
 		for (int i = 0; i < size; ++i) {
-			array[i] = GetDouble();
+			array[i] = ReadDouble();
 		}
 		return array;
 	}
 
-	public long GetLong() => long.Parse(GetInputLine());
+	public long ReadLong() => long.Parse(ReadLine());
 
-	public long[] GetLongArray(int size)
+	public long[] ReadLongArray(int size)
 	{
 		long[] array = new long[size];
 		for (int i = 0; i < size; ++i) {
-			array[i] = GetLong();
+			array[i] = ReadLong();
 		}
 		return array;
 	}
@@ -116,7 +116,7 @@ internal class StreamReaderWrapper
 		streamReader.Close();
 	}
 
-	private string GetInputLine()
+	private string ReadLine()
 	{
 		inputLinesEnumerator.MoveNext();
 		return inputLinesEnumerator.Current;
