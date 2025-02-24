@@ -23,24 +23,14 @@ internal class Program
 	private const string InputFilePath = "..\\..\\..\\input.txt";
 	private const string OutputFilePath = "..\\..\\..\\output.txt";
 
-	private static bool IsDebug()
-	{
-#if DEBUG
-		return true;
-#else
-		return false;
-#endif
-	}
-
 	public static StreamReaderWrapper Input { get; private set; }
 	public static StreamWriterWrapper Output { get; private set; }
 
-	private static void RunTests()
+	private static void Main()
 	{
-		int testsCount = IsSeveralTests ? int.Parse(Input.GetString()) : 1;
-		for (int i = 0; i < testsCount; ++i) {
-			Solver.SolveProblem();
-		}
+		OpenIo();
+		RunTests();
+		CloseIo();
 	}
 
 	private static void OpenIo()
@@ -51,17 +41,27 @@ internal class Program
 		Output = new StreamWriterWrapper(outputStream);
 	}
 
+	private static bool IsDebug()
+	{
+#if DEBUG
+		return true;
+#else
+		return false;
+#endif
+	}
+
+	private static void RunTests()
+	{
+		int testsCount = IsSeveralTests ? int.Parse(Input.GetString()) : 1;
+		for (int i = 0; i < testsCount; ++i) {
+			Solver.SolveProblem();
+		}
+	}
+
 	private static void CloseIo()
 	{
 		Input.Close();
 		Output.Close();
-	}
-
-	private static void Main()
-	{
-		OpenIo();
-		RunTests();
-		CloseIo();
 	}
 }
 
