@@ -146,6 +146,8 @@ internal class StreamWriterWrapper
 
 	public void WriteLine(object obj) => streamWriter.WriteLine(obj);
 
+	public void WriteLine() => streamWriter.WriteLine();
+
 	public void Close()
 	{
 		streamWriter.Close();
