@@ -2,66 +2,26 @@
 using System.Collections.Generic;
 using System.IO;
 
+/// <summary>
+/// Solve [PROBLEM_LINK] problem.
+/// </summary>
 internal class Solver
-{
-	private static StreamReaderWrapper Input => Program.Input;
-	private static StreamWriterWrapper Output => Program.Output;
-
-	/// <summary>
-	/// Solve [PROBLEM_LINK] problem.
-	/// </summary>
-	public static void SolveProblem()
-	{
-
-	}
-}
-
-internal class Program
 {
 	private const bool IsSeveralTests = true;
 
-	private const string InputFilePath = "..\\..\\..\\input.txt";
-	private const string OutputFilePath = "..\\..\\..\\output.txt";
+	private static StreamReaderWrapper Input => Program.Input;
+	private static StreamWriterWrapper Output => Program.Output;
 
-	public static StreamReaderWrapper Input { get; private set; }
-	public static StreamWriterWrapper Output { get; private set; }
-
-	private static void Main()
-	{
-		OpenIo();
-		RunTests();
-		CloseIo();
-	}
-
-	private static void OpenIo()
-	{
-		var inputStream = IsDebug() ? new StreamReader(InputFilePath) : new StreamReader(Console.OpenStandardInput());
-		Input = new StreamReaderWrapper(inputStream);
-		var outputStream = IsDebug() ? new StreamWriter(OutputFilePath) : new StreamWriter(Console.OpenStandardOutput());
-		Output = new StreamWriterWrapper(outputStream);
-	}
-
-	private static bool IsDebug()
-	{
-#if DEBUG
-		return true;
-#else
-		return false;
-#endif
-	}
-
-	private static void RunTests()
+	public static void Run()
 	{
 		int testsCount = IsSeveralTests ? int.Parse(Input.ReadString()) : 1;
 		for (int i = 0; i < testsCount; ++i) {
-			Solver.SolveProblem();
+			Solve();
 		}
 	}
 
-	private static void CloseIo()
+	private static void Solve()
 	{
-		Input.Close();
-		Output.Close();
 	}
 }
 
@@ -151,5 +111,44 @@ internal class StreamWriterWrapper
 	public void Close()
 	{
 		streamWriter.Close();
+	}
+}
+
+internal class Program
+{
+	private const string InputFilePath = "..\\..\\..\\input.txt";
+	private const string OutputFilePath = "..\\..\\..\\output.txt";
+
+	public static StreamReaderWrapper Input { get; private set; }
+	public static StreamWriterWrapper Output { get; private set; }
+
+	private static void Main()
+	{
+		OpenIo();
+		Solver.Run();
+		CloseIo();
+	}
+
+	private static void OpenIo()
+	{
+		var inputStream = IsDebug() ? new StreamReader(InputFilePath) : new StreamReader(Console.OpenStandardInput());
+		Input = new StreamReaderWrapper(inputStream);
+		var outputStream = IsDebug() ? new StreamWriter(OutputFilePath) : new StreamWriter(Console.OpenStandardOutput());
+		Output = new StreamWriterWrapper(outputStream);
+	}
+
+	private static bool IsDebug()
+	{
+#if DEBUG
+		return true;
+#else
+		return false;
+#endif
+	}
+
+	private static void CloseIo()
+	{
+		Input.Close();
+		Output.Close();
 	}
 }
