@@ -38,6 +38,8 @@ internal class StreamReaderWrapper
 
 	public string ReadString() => ReadLine();
 
+	public char ReadChar() => ReadLine()[0];
+
 	public int ReadInt() => int.Parse(ReadLine());
 
 	public int[] ReadIntArray(int size)
