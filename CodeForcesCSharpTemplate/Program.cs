@@ -72,6 +72,28 @@ internal class StreamReaderWrapper
 
 	public string GetString() => GetInputLine();
 
+	public int GetInt() => int.Parse(GetInputLine());
+
+	public int[] GetIntArray(int size)
+	{
+		int[] array = new int[size];
+		for (int i = 0; i < size; ++i) {
+			array[i] = GetInt();
+		}
+		return array;
+	}
+
+	public double GetDouble() => double.Parse(GetInputLine());
+
+	public double[] GetDoubleArray(int size)
+	{
+		double[] array = new double[size];
+		for (int i = 0; i < size; ++i) {
+			array[i] = GetDouble();
+		}
+		return array;
+	}
+
 	public void Close()
 	{
 		streamReader.Close();
