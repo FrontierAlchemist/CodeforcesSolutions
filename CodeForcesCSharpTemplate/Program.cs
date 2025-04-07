@@ -1,6 +1,7 @@
 ﻿#nullable disable
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 /// <summary>
@@ -22,7 +23,7 @@ internal class Program
 #endif
 	}
 
-	private static StreamReader input;
+	private static StreamReaderWrapper input;
 	private static StreamWriter output;
 
 	private static void SolveProblem()
@@ -31,19 +32,20 @@ internal class Program
 
 	private static void RunTests()
 	{
-		int testsCount = IsSeveralTests ? int.Parse(input.ReadLine()) : 1;
+		int testsCount = IsSeveralTests ? int.Parse(input.GetString()) : 1;
 		for (int i = 0; i < testsCount; ++i) {
 			SolveProblem();
 		}
 	}
 
-	private static void OpenIoStreams()
+	private static void OpenIo()
 	{
-		input = IsDebug() ? new StreamReader(InputFilePath) : new StreamReader(Console.OpenStandardInput());
+		var inputStream = IsDebug() ? new StreamReader(InputFilePath) : new StreamReader(Console.OpenStandardInput());
+		input = new StreamReaderWrapper(inputStream);
 		output = IsDebug() ? new StreamWriter(OutputFilePath) : new StreamWriter(Console.OpenStandardOutput());
 	}
 
-	private static void CloseIoStreams()
+	private static void CloseIo()
 	{
 		input.Close();
 		output.Close();
@@ -51,8 +53,43 @@ internal class Program
 
 	private static void Main()
 	{
-		OpenIoStreams();
+		OpenIo();
 		RunTests();
-		CloseIoStreams();
+		CloseIo();
+	}
+}
+
+internal class StreamReaderWrapper
+{
+	private readonly StreamReader streamReader;
+	private readonly IEnumerator<string> inputLinesEnumerator;
+
+	public StreamReaderWrapper(StreamReader streamReader)
+	{
+		this.streamReader = streamReader;
+		inputLinesEnumerator = GetInputLinesEnumerator();
+	}
+
+	public string GetString() => GetInputLine();
+
+	public void Close()
+	{
+		streamReader.Close();
+	}
+
+	private string GetInputLine()
+	{
+		inputLinesEnumerator.MoveNext();
+		return inputLinesEnumerator.Current;
+	}
+
+	private IEnumerator<string> GetInputLinesEnumerator()
+	{
+		while (true) {
+			string[] splitedLineFromInput = streamReader.ReadLine().Split();
+			foreach (var line in splitedLineFromInput) {
+				yield return line;
+			}
+		}
 	}
 }
