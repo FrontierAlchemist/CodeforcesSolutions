@@ -6,6 +6,12 @@ using namespace std;
 
 const bool IS_SEVERAL_TESTS = true;
 
+/// <summary>
+/// Solve [PROBLEM_LINK] problem.
+/// </summary>
+void SolveProblem() {
+}
+
 void RedirectIOStreams() {
 	auto fin = freopen("input.txt", "r", stdin);
 	auto fout = freopen("output.txt", "w", stdout);
@@ -15,9 +21,6 @@ void SpeedUpIO() {
 	ios::sync_with_stdio(false);
 	cin.tie(0);
 	cout.tie(0);
-}
-
-void SolveProblem() {
 }
 
 void RunTests() {
