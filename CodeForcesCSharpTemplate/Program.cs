@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 
 /// <summary>
@@ -14,7 +15,7 @@ internal class Solver
 
 	public static void Run()
 	{
-		int testsCount = IsSeveralTests ? int.Parse(Input.ReadString()) : 1;
+		int testsCount = IsSeveralTests ? Input.Read<int>() : 1;
 		for (int i = 0; i < testsCount; ++i) {
 			Solve();
 		}
@@ -36,52 +37,26 @@ internal class StreamReaderWrapper
 		inputLinesEnumerator = GetInputLinesEnumerator();
 	}
 
-	public string ReadString() => ReadLine();
+	public T Read<T>() where T : IParsable<T> => T.Parse(ReadLine(), CultureInfo.CurrentCulture);
 
-	public char ReadChar() => ReadLine()[0];
-
-	public int ReadInt() => int.Parse(ReadLine());
-
-	public int[] ReadIntArray(int size)
+	public T[] ReadArray<T>(int arraySize) where T: IParsable<T>
 	{
-		int[] array = new int[size];
-		for (int i = 0; i < size; ++i) {
-			array[i] = ReadInt();
+		T[] array = new T[arraySize];
+		for (int i = 0; i < arraySize; ++i) {
+			array[i] = Read<T>();
 		}
 		return array;
 	}
 
-	public double ReadDouble() => double.Parse(ReadLine());
-
-	public double[] ReadDoubleArray(int size)
+	public string ReadLine()
 	{
-		double[] array = new double[size];
-		for (int i = 0; i < size; ++i) {
-			array[i] = ReadDouble();
-		}
-		return array;
-	}
-
-	public long ReadLong() => long.Parse(ReadLine());
-
-	public long[] ReadLongArray(int size)
-	{
-		long[] array = new long[size];
-		for (int i = 0; i < size; ++i) {
-			array[i] = ReadLong();
-		}
-		return array;
+		inputLinesEnumerator.MoveNext();
+		return inputLinesEnumerator.Current;
 	}
 
 	public void Close()
 	{
 		streamReader.Close();
-	}
-
-	private string ReadLine()
-	{
-		inputLinesEnumerator.MoveNext();
-		return inputLinesEnumerator.Current;
 	}
 
 	private IEnumerator<string> GetInputLinesEnumerator()
