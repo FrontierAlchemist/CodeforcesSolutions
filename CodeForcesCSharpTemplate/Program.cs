@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 
+namespace CodeForces;
+
 /// <summary>
 /// Solve [PROBLEM_LINK] problem.
 /// </summary>
