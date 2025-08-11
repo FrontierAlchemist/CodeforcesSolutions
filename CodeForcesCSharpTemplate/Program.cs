@@ -8,22 +8,22 @@ namespace CodeForces;
 /// <summary>
 /// Solve [PROBLEM_LINK] problem.
 /// </summary>
-internal class Solver
+internal class Solver(StreamReaderWrapper input, StreamWriterWrapper output)
 {
 	private const bool IsSeveralTests = true;
 
-	private static StreamReaderWrapper Input => Program.Input;
-	private static StreamWriterWrapper Output => Program.Output;
+	private StreamReaderWrapper input = input;
+	private StreamWriterWrapper output = output;
 
-	public static void Run()
+	public void Run()
 	{
-		int testsCount = IsSeveralTests ? Input.Read<int>() : 1;
+		int testsCount = IsSeveralTests ? input.Read<int>() : 1;
 		for (int i = 0; i < testsCount; ++i) {
 			Solve();
 		}
 	}
 
-	private static void Solve()
+	private void Solve()
 	{
 	}
 }
@@ -104,7 +104,7 @@ internal class Program
 	private static void Main()
 	{
 		OpenIo();
-		Solver.Run();
+		new Solver(Input, Output).Run();
 		CloseIo();
 	}
 
